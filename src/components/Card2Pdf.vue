@@ -101,34 +101,49 @@ const generatePDF = async () => {
   }
 
   // Use html2canvas to capture the content as a canvas
-  const canvas = await html2canvas(content, { scale: 3 });
+  const canvas = await html2canvas(content, { scale: 5 });
   const imgData = canvas.toDataURL("image/png");
 
-  // Create a new jsPDF instance
+  // // Create a new jsPDF instance
+  // const pdf = new jsPDF({
+  //   orientation: "portrait",
+  //   unit: "pt",
+  //   format: "a4",
+  // });
+
+  // // Calculate width and height to fit A4 size
+  // const pdfWidth = pdf.internal.pageSize.getWidth();
+  // const pdfHeight = pdf.internal.pageSize.getHeight();
+
+  // // Calculate the image dimensions
+  // const imgWidth = canvas.width;
+  // const imgHeight = canvas.height;
+  // const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
+  // const imgX = 0;
+  // const imgY = 0;
+  // const imgScaledWidth = imgWidth * ratio;
+  // const imgScaledHeight = imgHeight * ratio;
+
+  // // Add the image to the PDF
+  // pdf.addImage(imgData, "PNG", imgX, imgY, imgScaledWidth, imgScaledHeight);
+
+
+   // Get the actual width and height of the captured canvas
+   const imgWidth = canvas.width;
+  const imgHeight = canvas.height;
+
+  // Create a new jsPDF instance with the same dimensions as the content
   const pdf = new jsPDF({
     orientation: "portrait",
-    unit: "pt",
-    format: "a4",
+    unit: "px",  // Use pixel units so we can match the canvas size
+    format: [imgWidth, imgHeight] // Set the PDF size to match the canvas
   });
 
-  // Calculate width and height to fit A4 size
-  const pdfWidth = pdf.internal.pageSize.getWidth();
-  const pdfHeight = pdf.internal.pageSize.getHeight();
-
-  // Calculate the image dimensions
-  const imgWidth = canvas.width;
-  const imgHeight = canvas.height;
-  const ratio = Math.min(pdfWidth / imgWidth, pdfHeight / imgHeight);
-  const imgX = 0;
-  const imgY = 0;
-  const imgScaledWidth = imgWidth * ratio;
-  const imgScaledHeight = imgHeight * ratio;
-
-  // Add the image to the PDF
-  pdf.addImage(imgData, "PNG", imgX, imgY, imgScaledWidth, imgScaledHeight);
+  // Add the image to the PDF (it will fill the page exactly)
+  pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
 
   // Save the PDF
-  pdf.save(`${person.value.name}.pdf`);
+  pdf.save(`${person.value.name}-${person.value.id}.pdf`);
 };
 </script>
 
