@@ -31,8 +31,12 @@
       />
     </div>
 
-    <button class="btn btn-save" @click="savePerson">{{ isEdit ? "Save" : "Add" }}</button>
-    <button v-if="form.name" class="btn btn-cancel" @click="resetForm">cancel</button>
+    <button :disabled="disabled" class="btn btn-save" @click="savePerson">
+      {{ isEdit ? "Save" : "Add" }}
+    </button>
+    <button v-if="form.name" class="btn btn-cancel" @click="resetForm">
+      cancel
+    </button>
   </div>
 </template>
 
@@ -42,6 +46,8 @@ import { usePeopleStore } from "../stores/peopleStore";
 
 const store = usePeopleStore();
 const isEdit = ref(false);
+const disabled = ref(true);
+
 // Props for editing
 const props = defineProps({
   isEditing: Boolean,
@@ -54,10 +60,24 @@ const form = ref({
   address: "",
   age: 0,
 });
+
 const resetForm = () => {
   form.value = { id: "", name: "", address: "", age: 0 };
   isEdit.value = false;
 };
+
+watch(
+  () => form.value,
+  (newForm) => {
+    // Disable button if any form fields are empty
+    if (newForm.name && newForm.age && newForm.address) {
+      disabled.value = false;
+    } else {
+      disabled.value = true;
+    }
+  },
+  { deep: true }
+);
 
 // Watch for changes in the editPerson prop to pre-fill the form
 watch(
@@ -85,13 +105,16 @@ const savePerson = () => {
 };
 </script>
 
+
 <style scoped>
 .person-form {
-   display: flex;
+  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 500px;
+  gap: 20px;
+  margin-bottom: 1rem;
 
   border-radius: 15px;
   box-shadow: 20px 20px 60px #bebebe, -20px -20px 60px #ffffff;
@@ -134,7 +157,7 @@ const savePerson = () => {
 }
 
 .btn {
-  margin: 5px;
+  margin: 15px;
   padding: 8px 16px;
   border: none;
   border-radius: 4px;
@@ -144,7 +167,7 @@ const savePerson = () => {
 }
 
 .btn-save {
-  background-color: #4CAF50;
+  background-color: #4caf50;
   color: white;
 }
 .btn-save:hover {
