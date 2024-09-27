@@ -123,7 +123,6 @@
 
 
 
-  /* From Uiverse.io by abrahamcalsin */ 
 .card-client {
   background: #2cb5a0;
   width: 13rem;
