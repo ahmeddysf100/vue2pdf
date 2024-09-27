@@ -15,7 +15,7 @@ const personCard = ref(null);
 // Edit an existing person
 const edit = (person) => {
   isEditing.value = true;
-  editPerson.value = { ...person }; // Use a shallow copy to prevent two-way data binding issues
+  editPerson.value = { ...person }; 
 };
 
 // Delete a person (if needed)
@@ -25,14 +25,14 @@ const deletePerson = (personId) => {
 
 const showCard = (person) => {
   card.value = true;
-  personCard.value = { ...person }; 
+  personCard.value = { ...person };
   console.log(personCard.value);
 };
 
 const closeCard = (val) => {
-    card.value = val;
-    console.log('card',card.value);
-}
+  card.value = val;
+  console.log("card", card.value);
+};
 </script>
 
 <template>
@@ -41,7 +41,6 @@ const closeCard = (val) => {
   <ul class="people-list">
     <li v-for="person in people" :key="person.id" class="person-item">
       <div class="person-details">
-        <!-- <h3 class="person-name">{{ person.name }}</h3> -->
         <div class="person-info">
           <p>
             ID: <span> {{ person.id }}</span>
@@ -62,11 +61,13 @@ const closeCard = (val) => {
           Show Card
         </button>
         <button class="btn btn-edit" @click="edit(person)">Edit</button>
-        <button class="btn btn-delete" @click="deletePerson(person.id)">Cancel</button>
+        <button class="btn btn-delete" @click="deletePerson(person.id)">
+          Cancel
+        </button>
       </div>
     </li>
   </ul>
-  <Card2Pdf v-if="card"  @update:showCard="closeCard" :person="personCard"/>
+  <Card2Pdf v-if="card" @update:showCard="closeCard" :person="personCard" />
 </template>
 
 <style scoped>
@@ -74,15 +75,15 @@ const closeCard = (val) => {
   list-style: none;
   padding: 0;
   margin: 5px;
-  width: 100%;
+  width: 1000px;
 
-  /* Allow the .app container to grow */
-  max-height: 200px; /* Optional: limit the height to viewport */
-  overflow-y: auto; /* Enable vertical scrolling within .app */
+  max-height: 200px; 
+  overflow-y: auto; 
 }
 
 .person-item {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   background-color: #f9f9f9;
@@ -93,7 +94,8 @@ const closeCard = (val) => {
 }
 
 .person-details {
-  max-width: 100%;
+  flex: 1; /* Allow details to take available space */
+  min-width: 200px; /* Set a minimum width to prevent shrinking too much */
 }
 
 span {
@@ -114,6 +116,7 @@ span {
   font-weight: bold;
   color: #171616;
 }
+
 
 .person-actions .btn {
   margin-left: 8px;
@@ -153,5 +156,54 @@ span {
 
 .btn-show-card:hover {
   background-color: #458ca0;
+}
+
+@media (max-width: 900px) {
+  .people-list {
+    width:500px ;
+    max-height: 400px;
+  }
+  .person-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .person-info {
+    /* flex-direction: column; */
+    align-items: flex-start;
+    gap: 0;
+  }
+  .person-actions {
+    margin: 10px auto 0;
+    display: flex;
+    justify-content: center;
+  }
+  .btn {
+    width: 80px;
+    font-size: 0.8em;
+  }
+}
+
+@media (max-width: 600px) {
+  .people-list {
+    width: 400px;
+  }
+  .person-item {
+    flex-direction: column;
+    align-items: center;
+  }
+  .person-info {
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin: 10px auto 0;
+  }
+  .person-actions {
+    margin: 10px auto 0;
+   
+  }
+  .btn {
+    width: 80px;
+    font-size: 0.8em;
+  }
 }
 </style>

@@ -1,3 +1,11 @@
+/**
+ * The `PersonForm` component is responsible for rendering a form to create or edit a person.
+ * It uses the `usePeopleStore` Pinia store to manage the person data.
+ * The form includes fields for the person's name, age, and address.
+ * The component supports both creating a new person and editing an existing one.
+ * When the form is submitted, the component will either add a new person or update an existing one.
+ * The component also provides a "cancel" button to reset the form.
+ */
 <template>
   <div class="person-form">
     <h3>{{ isEdit ? "Edit Person" : "Add New Person" }}</h3>
@@ -51,7 +59,7 @@ const disabled = ref(true);
 // Props for editing
 const props = defineProps({
   isEditing: Boolean,
-  editPerson: Object, // The person object to be edited
+  editPerson: Object, 
 });
 
 const form = ref({
@@ -123,7 +131,9 @@ const savePerson = () => {
   font-family: sans-serif;
   color: #333;
 }
-/* From Uiverse.io by kamehame-ha */
+
+
+
 .coolinput {
   display: flex;
   flex-direction: column;
@@ -181,5 +191,19 @@ const savePerson = () => {
 
 .btn-cancel:hover {
   background-color: #da190b;
+}
+
+
+@media (max-width: 600px) {
+  .person-form {
+    width: 300px;
+  }
+  .btn {
+    width: 80px;
+    font-size: 1em;
+  }
+  .coolinput {
+    width: 200px;
+  }
 }
 </style>

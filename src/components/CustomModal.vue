@@ -1,4 +1,3 @@
-<!-- src/components/Modal.vue -->
 <template>
       <div
         v-if="isVisible"
@@ -29,14 +28,11 @@
   <script setup>
   import {
     ref,
-    defineEmits,
     defineProps,
-    watch,
     onMounted,
-    nextTick,
+    computed,
     onBeforeUnmount,
   } from "vue";
-  import { createFocusTrap } from "focus-trap";
   
   // Define props
   const props = defineProps({
@@ -49,69 +45,38 @@
   // Define emits
   const emit = defineEmits(["update:modelValue"]);
   
-  // Local state for modal visibility
-  const isVisible = ref(props.modelValue);
+  // Computed property for two-way binding with modelValue
+  const isVisible = computed({
+    get: () => props.modelValue,
+    set: (val) => emit("update:modelValue", val),
+  });
   
   // Function to close the modal
   const close = () => {
     isVisible.value = false;
-    emit("update:modelValue", false);
   };
   
-  // Reference to the modal content for focus trapping
+  // Reference to the modal content
   const modalContent = ref(null);
   
-  // Focus trap initialization
-  let trap;
-  
-  // Activate focus trap when modal is visible
-  watch(isVisible, async (newVal) => {
-    if (newVal) {
-      await nextTick();
-      if (modalContent.value) {
-        trap = createFocusTrap(modalContent.value, {
-          onDeactivate: close,
-        });
-        trap.activate();
-        document.body.style.overflow = "hidden";
-      }
-    } else {
-      if (trap) {
-        trap.deactivate();
-        trap = null;
-      }
-      document.body.style.overflow = "";
-    }
-  });
-  
-  // Watch for changes in modelValue prop to update local state
-  watch(
-    () => props.modelValue,
-    (newVal) => {
-      isVisible.value = newVal;
-    }
-  );
   
   // Handle Escape key to close modal
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape" && isVisible.value) {
+      close();
+    }
+  };
+  
+  // Watch for Escape key press
   onMounted(() => {
     window.addEventListener("keydown", handleKeyDown);
   });
   
   onBeforeUnmount(() => {
     window.removeEventListener("keydown", handleKeyDown);
-    if (trap) {
-      trap.deactivate();
-      trap = null;
-    }
-    document.body.style.overflow = "";
   });
-  
-  const handleKeyDown = (event) => {
-    if (event.key === "Escape" && isVisible.value) {
-      close();
-    }
-  };
   </script>
+  
   
 
 <style scoped>
